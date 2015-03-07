@@ -2,6 +2,15 @@
 
 namespace znk3r\MQlib\Broker;
 
+use PhpAmqpLib\Channel\AMQPChannel;
+use PhpAmqpLib\Connection\AbstractConnection;
+use PhpAmqpLib\Connection\AMQPStreamConnection;
+use PhpAmqpLib\Connection\AMQPSSLConnection;
+use PhpAmqpLib\Connection\AMQPSocketConnection;
+use PhpAmqpLib\Connection\AMQPLazyConnection;
+use znk3r\MQlib\Broker\Connection\ConnectionException;
+use znk3r\MQlib\Broker\Connection\Factory;
+
 /**
  * Class AbstractBroker.
  *
@@ -25,6 +34,18 @@ abstract class AbstractBroker
 
     /** @var int MAX_CONNECTION_TIMEOUT Maximum number of seconds for timeout */
     const MAX_CONNECTION_TIMEOUT = 300;
+
+    /** @var string $connectionType */
+    protected $connectionType;
+
+    /** @var AbstractConnection $connection */
+    protected $connection;
+
+    /** @var int|null $channelId */
+    protected $channelId;
+
+    /** @var AMQPChannel $currentChannel */
+    protected $currentChannel;
 
     /** @var string $host AMQP broker */
     protected $host;
@@ -56,26 +77,22 @@ abstract class AbstractBroker
     /** @var int $timeout Seconds before the connection is closed with a timeout */
     protected $timeout;
 
-    /** @var int|null $channelId Channel id to use with the broker. If null, it uses a random channel for each connection */
-    protected $channelId;
+    /** @var int $readWriteTimeout Seconds before a read/write operation times out */
+    protected $readWriteTimeout;
+
+    /** @var bool $keepAlive */
+    protected $keepAlive = false;
+
+    /** @var int $heartbeat */
+    protected $heartbeat = 0;
+
+    /** @var array $sslOptions SSL connection options */
+    protected $sslOptions = array();
 
     /**
      * Initialize the broker object with a config array.
      *
-     * @param array $options {
-     *
-     *      @var string
-     *      @var int
-     *      @var string
-     *      @var string
-     *      @var string
-     *      @var bool
-     *      @var string
-     *      @var string
-     *      @var string
-     *      @var int
-     *      @var int
-     * }
+     * @param array $options
      */
     public function __construct(array $options)
     {
@@ -85,6 +102,147 @@ abstract class AbstractBroker
             }
         }
     }
+
+    /**
+     * @param AbstractConnection|null $connection
+     *
+     * @return $this
+     */
+    public function connect($connection = null)
+    {
+        if (null !== $connection) {
+            $this->setConnection($connection);
+        }
+
+        // The connection is opened when the connection object is created, we just need to check if this is true
+        // Calling getConnection() creates a new connection if one doesn't exist
+        if (!$this->getConnection()->isConnected()) {
+            $this->connection->reconnect();
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return $this
+     */
+    public function disconnect()
+    {
+        if ($this->connection) {
+            $this->connection->close();
+            $this->connection = null;
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param AbstractConnection $connection
+     * @return $this
+     */
+    public function setConnection(AbstractConnection $connection)
+    {
+        $this->connection = $connection;
+
+        return $this;
+    }
+
+    /**
+     * @return AMQPStreamConnection|AMQPSSLConnection|AMQPSocketConnection|AMQPLazyConnection
+     * @throws ConnectionException
+     */
+    public function getConnection()
+    {
+        if (!$this->connection) {
+            $this->connection = Factory::create($this, $this->getConnectionType());
+        }
+
+        if (!$this->connection instanceof AbstractConnection) {
+            throw new ConnectionException('Invalid connection object');
+        }
+
+        return $this->connection;
+    }
+
+    /**
+     * @param string $type
+     * @throws InvalidArgumentException
+     * @return $this
+     */
+    public function setConnectionType($type)
+    {
+        $factoryClass = new \ReflectionClass('Factory');
+
+        foreach($factoryClass->getConstants() as $constantName => $constantValue) {
+            if ($constantValue == $type) {
+                $this->connectionType = $type;
+                return $this;
+            }
+        }
+
+        throw new InvalidArgumentException('Unknown connection type '.$type);
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getConnectionType()
+    {
+        return $this->connectionType;
+    }
+
+    /**
+     * @param int|null $channelId
+     * @return $this
+     * @throws InvalidArgumentException
+     */
+    public function setChannelId($channelId)
+    {
+        if (null !== $channelId || !is_integer($channelId)) {
+            throw new InvalidArgumentException('Invalid channel id, should be null or an integer');
+        }
+
+        $this->channelId = $channelId;
+
+        return $this;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getChannelId()
+    {
+        return $this->channelId;
+    }
+
+    /**
+     * Open a channel
+     *
+     * You can send a channel id as parameter, or null to pick a random one, or use the default option from
+     * the broker with false.
+     *
+     * @param int|null|bool $channelId
+     *
+     * @return $this
+     */
+    public function openChannel($channelId = false)
+    {
+        if (false !== $channelId) {
+            $this->setChannelId($channelId);
+        }
+
+        $this->currentChannel = $this->getConnection()->channel($channelId);
+        return $this;
+    }
+
+    /**
+     * @return AMQPChannel|null
+     */
+    public function getCurrentChannel()
+    {
+        return $this->currentChannel;
+    }
+
 
     /**
      * @param $host
@@ -267,6 +425,14 @@ abstract class AbstractBroker
     }
 
     /**
+     * @return string|null
+     */
+    public function getLoginResponse()
+    {
+        return $this->loginResponse;
+    }
+
+    /**
      * @param $locale
      *
      * @return $this
@@ -305,7 +471,7 @@ abstract class AbstractBroker
 
         if ($seconds < self::MIN_CONNECTION_TIMEOUT || $seconds > self::MAX_CONNECTION_TIMEOUT) {
             throw new InvalidArgumentException(
-                'Invalid timeout, should be between '.self::MIN_CONNECTION_TIMEOUT.' and '.self::MAX_CONNECTION_TIMEOUT.' seconds'
+                'Invalid connection timeout, should be between '.self::MIN_CONNECTION_TIMEOUT.' and '.self::MAX_CONNECTION_TIMEOUT.' seconds'
             );
         }
 
@@ -323,26 +489,92 @@ abstract class AbstractBroker
     }
 
     /**
-     * @param $channelId
+     * @param $seconds
      *
      * @return $this
+     *
+     * @throws InvalidArgumentException
      */
-    public function setChannelId($channelId)
+    public function setReadWriteTimeout($seconds)
     {
-        if (!is_integer($channelId) || !is_null($channelId)) {
-            throw new \InvalidArgumentException('Invalid channel ID, should be an integer or null');
+        $seconds = (int) $seconds;
+
+        if ($seconds < self::MIN_CONNECTION_TIMEOUT || $seconds > self::MAX_CONNECTION_TIMEOUT) {
+            throw new InvalidArgumentException(
+                'Invalid r/w timeout, should be between '.self::MIN_CONNECTION_TIMEOUT.' and '.self::MAX_CONNECTION_TIMEOUT.' seconds'
+            );
         }
 
-        $this->channelId = $channelId;
+        $this->readWriteTimeout = $seconds;
 
         return $this;
     }
 
     /**
-     * @return int|null
+     * @return int
      */
-    public function getChannelId()
+    public function getReadWriteTimeout()
     {
-        return $this->channelId;
+        return $this->readWriteTimeout;
+    }
+
+    /**
+     * @param bool $keepAlive
+     *
+     * @return $this
+     */
+    public function setKeepAlive($keepAlive)
+    {
+        $this->keepAlive = (bool)$keepAlive;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getKeepAlive()
+    {
+        return $this->keepAlive;
+    }
+
+    /**
+     * @param int $heartbeat
+     *
+     * @return $this
+     */
+    public function setHeartbeat($heartbeat)
+    {
+        $this->heartbeat = (int)$heartbeat;
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getHeartbeat()
+    {
+        return $this->heartbeat;
+    }
+
+    /**
+     * @param array $sslOptions
+     *
+     * @return $this
+     */
+    public function setSslConnectionOptions(array $sslOptions)
+    {
+        $this->sslOptions = $sslOptions;
+
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getSslConnectionOptions()
+    {
+        return $this->sslOptions;
     }
 }
