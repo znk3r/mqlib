@@ -166,7 +166,7 @@ abstract class AbstractBroker
 
     /**
      * @param string $type
-     * @throws InvalidArgumentException
+     * @throws ConnectionException
      * @return $this
      */
     public function setConnectionType($type)
@@ -180,7 +180,7 @@ abstract class AbstractBroker
             }
         }
 
-        throw new InvalidArgumentException('Unknown connection type '.$type);
+        throw new ConnectionException('Unknown connection type '.$type);
     }
 
     /**
