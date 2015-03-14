@@ -2,7 +2,6 @@
 
 namespace znk3r\MQlib\Broker;
 
-use PhpAmqpLib\Channel\AMQPChannel;
 use PhpAmqpLib\Connection\AbstractConnection;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
 use PhpAmqpLib\Connection\AMQPSSLConnection;
@@ -10,6 +9,7 @@ use PhpAmqpLib\Connection\AMQPSocketConnection;
 use PhpAmqpLib\Connection\AMQPLazyConnection;
 use znk3r\MQlib\Broker\Connection\ConnectionException;
 use znk3r\MQlib\Broker\Connection\Factory;
+use znk3r\MQlib\Broker\Channel\Channel;
 
 /**
  * Class AbstractBroker.
@@ -44,8 +44,8 @@ abstract class AbstractBroker
     /** @var int|null $channelId */
     protected $channelId;
 
-    /** @var AMQPChannel $currentChannel */
-    protected $currentChannel;
+    /** @var Channel $channel */
+    protected $channel;
 
     /** @var string $host AMQP broker */
     protected $host;
@@ -238,17 +238,19 @@ abstract class AbstractBroker
             $this->setChannelId($channelId);
         }
 
-        $this->currentChannel = $this->getConnection()->channel($channelId);
+        $this->channel = new Channel(
+            $this->getConnection()->channel($channelId)
+        );
 
         return $this;
     }
 
     /**
-     * @return AMQPChannel|null
+     * @return Channel|null
      */
-    public function getCurrentChannel()
+    public function getChannel()
     {
-        return $this->currentChannel;
+        return $this->channel;
     }
 
     /**
