@@ -1,5 +1,7 @@
 <?php
+
 namespace znk3r\MQlib\Broker\Connection;
+
 use znk3r\MQlib\Broker\AbstractBroker;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
 use PhpAmqpLib\Connection\AMQPSSLConnection;
@@ -7,14 +9,14 @@ use PhpAmqpLib\Connection\AMQPSocketConnection;
 use PhpAmqpLib\Connection\AMQPLazyConnection;
 
 /**
- * Factory class to create a connection object based on a type
+ * Factory class to create a connection object based on a type.
  *
  * @version   1.0.0
  *
  * @author    Miguel Angel Liebana <mi.liebana@gmail.com>
  * @copyright 2015 Miguel Angel Liebana
  */
-final Class Factory
+final class Factory
 {
     /** @var string CONNECTION_STREAM Use a StreamIO for the connection to the broker */
     const CONNECTION_STREAM = 'StreamIO';
@@ -29,10 +31,11 @@ final Class Factory
     const CONNECTION_SOCKET = 'SocketIO';
 
     /**
-     * Generate the connection object to use
+     * Generate the connection object to use.
      *
      * @param AbstractBroker $broker
-     * @param string $type Connection type
+     * @param string         $type   Connection type
+     *
      * @throws ConnectionException
      *
      * @return AMQPStreamConnection|AMQPSSLConnection|AMQPSocketConnection|AMQPLazyConnection
@@ -60,6 +63,7 @@ final Class Factory
 
     /**
      * @param AbstractBroker $broker
+     *
      * @return AMQPStreamConnection
      */
     private static function getStreamConnection(AbstractBroker $broker)
@@ -84,6 +88,7 @@ final Class Factory
 
     /**
      * @param AbstractBroker $broker
+     *
      * @return AMQPSSLConnection
      */
     private static function getSslStreamConnection(AbstractBroker $broker)
@@ -112,6 +117,7 @@ final Class Factory
 
     /**
      * @param AbstractBroker $broker
+     *
      * @return AMQPLazyConnection
      */
     private static function getStreamLazyConnection(AbstractBroker $broker)
@@ -136,6 +142,7 @@ final Class Factory
 
     /**
      * @param AbstractBroker $broker
+     *
      * @return AMQPSocketConnection
      */
     private static function getSocketConnection(AbstractBroker $broker)

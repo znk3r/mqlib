@@ -1,10 +1,11 @@
 <?php
+
 namespace znk3r\MQlib\Message\Outgoing;
+
 use znk3r\MQlib\Message\Outgoing;
 
-
 /**
- * Text message which can be sent to the queue
+ * Text message which can be sent to the queue.
  *
  * @version   1.0.0
  *
@@ -20,7 +21,7 @@ class Text extends Outgoing
     const CONTENT_ENCODING = 'UTF-8';
 
     /**
-     * Encode some data to create a text message
+     * Encode some data to create a text message.
      *
      * @param mixed $data
      */

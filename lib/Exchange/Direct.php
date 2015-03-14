@@ -1,8 +1,9 @@
 <?php
+
 namespace znk3r\MQlib\Exchange;
 
 /**
- * Class Direct exchange
+ * Class Direct exchange.
  *
  * A direct exchange sends the message to a specific queue
  *
@@ -17,7 +18,7 @@ class Direct extends AbstractExchange
     const TYPE = 'direct';
 
     /**
-     * Return exchange type
+     * Return exchange type.
      *
      * @return string
      */

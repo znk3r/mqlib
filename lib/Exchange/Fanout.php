@@ -1,8 +1,9 @@
 <?php
+
 namespace znk3r\MQlib\Exchange;
 
 /**
- * Class Fanout exchange
+ * Class Fanout exchange.
  *
  * A fanout exchange sends a copy of the message to all the queues connected to it.
  *
@@ -17,7 +18,7 @@ class Fanout extends AbstractExchange
     const TYPE = 'fanout';
 
     /**
-     * Return exchange type
+     * Return exchange type.
      *
      * @return string
      */

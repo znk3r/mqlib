@@ -1,8 +1,9 @@
 <?php
+
 namespace znk3r\MQlib\Exchange;
 
 /**
- * Class Headers exchange
+ * Class Headers exchange.
  *
  * A headers exchange sends the message to one or more queues based on the message headers
  *
@@ -17,7 +18,7 @@ class Headers extends AbstractExchange
     const TYPE = 'headers';
 
     /**
-     * Return exchange type
+     * Return exchange type.
      *
      * @return string
      */

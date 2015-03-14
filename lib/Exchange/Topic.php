@@ -1,8 +1,9 @@
 <?php
+
 namespace znk3r\MQlib\Exchange;
 
 /**
- * Class Topic exchange
+ * Class Topic exchange.
  *
  * Each message is sent with a set of topics, which are used to route it to one or more queues
  *
@@ -17,7 +18,7 @@ class Topic extends AbstractExchange
     const TYPE = 'topic';
 
     /**
-     * Return exchange type
+     * Return exchange type.
      *
      * @return string
      */

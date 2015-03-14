@@ -1,4 +1,5 @@
 <?php
+
 namespace znk3r\MQlib\Message;
 
 /**
@@ -9,7 +10,7 @@ namespace znk3r\MQlib\Message;
  * @author    Miguel Angel Liebana <mi.liebana@gmail.com>
  * @copyright 2015 Miguel Angel Liebana
  */
-Abstract class Message
+abstract class Message
 {
     /** @var string $body Body of the message as sent/received */
     protected $body;
@@ -25,23 +26,23 @@ Abstract class Message
      *  1: Non-persistent. The message is stored in memory and can be lost if server restarts.
      *  2: Persistent. Message is stored in memory and disk and preserved between server restarts.
      *
-     * @var bool $isPersistent
+     * @var bool
      */
     protected $isPersistent;
 
     /**
      * Sets the priority of the message inside a queue.
      *
-     * @var int|null $priority
+     * @var int|null
      * @note RabbitMQ hasn't implement priority yet (v3.2.1). At the moment the property is ignored
-     *       and the only priority is FIFO.
+     *               and the only priority is FIFO.
      */
     protected $priority;
 
     /**
-     * TTL for the message in ms. Can be used to expire the message at a specific time (ex. at midnight)
+     * TTL for the message in ms. Can be used to expire the message at a specific time (ex. at midnight).
      *
-     * @var int|null $expiration
+     * @var int|null
      */
     protected $expiration;
 
@@ -58,16 +59,16 @@ Abstract class Message
     protected $appId;
 
     /**
-     * Additional application headers to send, for example with a ttl for the message or what to do if there's no queue
+     * Additional application headers to send, for example with a ttl for the message or what to do if there's no queue.
      *
-     * @var array|null $applicationHeaders
+     * @var array|null
      */
     protected $applicationHeaders;
 
     /**
-     * Name of the callback queue, in case you want to notify something when the message has been processed
+     * Name of the callback queue, in case you want to notify something when the message has been processed.
      *
-     * @var string|null $replyTo
+     * @var string|null
      */
     protected $replyTo;
 
@@ -75,15 +76,17 @@ Abstract class Message
      * References the original message inside a callback and must be unique.
      * messageId is unique for the original message and the reply, but both messages share the same correlationId.
      *
-     * @var string|null $correlationId
+     * @var string|null
      */
     protected $correlationId;
 
     /**
-     * Set the body of the message
+     * Set the body of the message.
      *
      * @param string $body
+     *
      * @return $this
+     *
      * @throws MessageException
      */
     public function setBody($body)
@@ -107,7 +110,9 @@ Abstract class Message
 
     /**
      * @param $contentType
+     *
      * @return $this
+     *
      * @throws InvalidArgumentException
      */
     public function setContentType($contentType)
@@ -149,14 +154,15 @@ Abstract class Message
     }
 
     /**
-     * Declare the message as persistent inside the queue
+     * Declare the message as persistent inside the queue.
      *
      * @param bool $persistent
+     *
      * @return $this
      */
     public function markAsPersistent($persistent = true)
     {
-        $this->isPersistent = (bool)$persistent;
+        $this->isPersistent = (bool) $persistent;
 
         return $this;
     }
@@ -171,6 +177,7 @@ Abstract class Message
 
     /**
      * @param int $priority
+     *
      * @return $this
      */
     public function setPriority($priority)
@@ -190,13 +197,15 @@ Abstract class Message
 
     /**
      * @param int|null $ttl
+     *
      * @return $this
+     *
      * @throws InvalidArgumentException
      */
     public function setExpirationTime($ttl)
     {
         if (null !== $ttl) {
-            $ttl = (int)$ttl;
+            $ttl = (int) $ttl;
 
             if ($ttl < 1 || $ttl > PHP_INT_MAX) {
                 throw new InvalidArgumentException('Invalid expiration time');
@@ -218,6 +227,7 @@ Abstract class Message
 
     /**
      * @param string $messageId
+     *
      * @return $this
      */
     public function setMessageId($messageId)
@@ -237,12 +247,14 @@ Abstract class Message
 
     /**
      * @param int $timestamp
+     *
      * @return $this
+     *
      * @throws InvalidArgumentException
      */
     public function setTimestamp($timestamp)
     {
-        $timestamp = (int)$timestamp;
+        $timestamp = (int) $timestamp;
 
         if ($timestamp < 1 || $timestamp > PHP_INT_MAX) {
             throw new InvalidArgumentException('Invalid message timestamp');
@@ -263,6 +275,7 @@ Abstract class Message
 
     /**
      * @param string $userId
+     *
      * @return mixed
      */
     public function setUserId($userId)
@@ -282,6 +295,7 @@ Abstract class Message
 
     /**
      * @param string $appId
+     *
      * @return mixed
      */
     public function setAppId($appId)
@@ -301,6 +315,7 @@ Abstract class Message
 
     /**
      * @param array $headers
+     *
      * @return $this
      */
     public function setApplicationHeaders(array $headers)
@@ -319,9 +334,10 @@ Abstract class Message
     }
 
     /**
-     * Set the name of the queue to reply as callback
+     * Set the name of the queue to reply as callback.
      *
      * @param string $replyTo
+     *
      * @return $this
      */
     public function setReplyTo($replyTo)
@@ -341,6 +357,7 @@ Abstract class Message
 
     /**
      * @param string $id
+     *
      * @return $this
      */
     public function setCorrelationId($id)

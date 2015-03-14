@@ -138,6 +138,7 @@ abstract class AbstractBroker
 
     /**
      * @param AbstractConnection $connection
+     *
      * @return $this
      */
     public function setConnection(AbstractConnection $connection)
@@ -149,6 +150,7 @@ abstract class AbstractBroker
 
     /**
      * @return AMQPStreamConnection|AMQPSSLConnection|AMQPSocketConnection|AMQPLazyConnection
+     *
      * @throws ConnectionException
      */
     public function getConnection()
@@ -166,16 +168,19 @@ abstract class AbstractBroker
 
     /**
      * @param string $type
+     *
      * @throws ConnectionException
+     *
      * @return $this
      */
     public function setConnectionType($type)
     {
         $factoryClass = new \ReflectionClass('Factory');
 
-        foreach($factoryClass->getConstants() as $constantName => $constantValue) {
+        foreach ($factoryClass->getConstants() as $constantName => $constantValue) {
             if ($constantValue == $type) {
                 $this->connectionType = $type;
+
                 return $this;
             }
         }
@@ -193,7 +198,9 @@ abstract class AbstractBroker
 
     /**
      * @param int|null $channelId
+     *
      * @return $this
+     *
      * @throws InvalidArgumentException
      */
     public function setChannelId($channelId)
@@ -216,7 +223,7 @@ abstract class AbstractBroker
     }
 
     /**
-     * Open a channel
+     * Open a channel.
      *
      * You can send a channel id as parameter, or null to pick a random one, or use the default option from
      * the broker with false.
@@ -232,6 +239,7 @@ abstract class AbstractBroker
         }
 
         $this->currentChannel = $this->getConnection()->channel($channelId);
+
         return $this;
     }
 
@@ -242,7 +250,6 @@ abstract class AbstractBroker
     {
         return $this->currentChannel;
     }
-
 
     /**
      * @param $host
@@ -525,7 +532,7 @@ abstract class AbstractBroker
      */
     public function setKeepAlive($keepAlive)
     {
-        $this->keepAlive = (bool)$keepAlive;
+        $this->keepAlive = (bool) $keepAlive;
 
         return $this;
     }
@@ -545,7 +552,7 @@ abstract class AbstractBroker
      */
     public function setHeartbeat($heartbeat)
     {
-        $this->heartbeat = (int)$heartbeat;
+        $this->heartbeat = (int) $heartbeat;
 
         return $this;
     }

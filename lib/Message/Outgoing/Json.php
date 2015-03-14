@@ -1,10 +1,11 @@
 <?php
+
 namespace znk3r\MQlib\Message\Outgoing;
+
 use znk3r\MQlib\Message\Outgoing;
 
-
 /**
- * JSON message which can be sent to the queue
+ * JSON message which can be sent to the queue.
  *
  * @version   1.0.0
  *
@@ -20,7 +21,7 @@ class Json extends Outgoing
     const CONTENT_ENCODING = 'UTF-8';
 
     /**
-     * Encode some data to create a JSON message
+     * Encode some data to create a JSON message.
      *
      * @param mixed $data
      */

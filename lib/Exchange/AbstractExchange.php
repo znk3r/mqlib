@@ -1,4 +1,5 @@
 <?php
+
 namespace znk3r\MQlib\Exchange;
 
 /**
@@ -20,7 +21,7 @@ abstract class AbstractExchange
      * When true all other fields except no-wait are ignored.
      * Default is false, where the exchange will be declared if not exists. That's usually the most common case.
      *
-     * @var bool $passive
+     * @var bool
      */
     protected $passive = false;
 
@@ -32,15 +33,17 @@ abstract class AbstractExchange
      * request that.
      *
      * @note You may need a plugin to delete durable exchanges from RabbitMQ
-     * @var bool $durable
+     *
+     * @var bool
      */
     protected $durable = true;
 
     /**
      * If set, the exchange is deleted when all queues have finished using it.
-     * Ignored if the exchange already exists
+     * Ignored if the exchange already exists.
      *
      * @note Useful to have as true for dev and tests, but false for production
+     *
      * @var bool
      */
     protected $autoDelete = false;
@@ -82,7 +85,9 @@ abstract class AbstractExchange
 
     /**
      * @param string $name
+     *
      * @return $this
+     *
      * @throws InvalidArgumentException
      */
     public function setName($name)
@@ -107,12 +112,14 @@ abstract class AbstractExchange
     /**
      * Changes if the exchange will be declared as passive or not.
      *
-     * @param  bool $value
+     * @param bool $value
+     *
      * @return $this
      */
     public function declareAsPassive($value)
     {
         $this->passive = (bool) $value;
+
         return $this;
     }
 
@@ -127,12 +134,14 @@ abstract class AbstractExchange
     /**
      * Changes if the exchange will be declared as durable and survive server restarts.
      *
-     * @param  bool $value
+     * @param bool $value
+     *
      * @return $this
      */
     public function declareAsDurable($value)
     {
         $this->durable = (bool) $value;
+
         return $this;
     }
 
@@ -147,12 +156,14 @@ abstract class AbstractExchange
     /**
      * Change if the exchange will be declared with auto_delete and be deleted when all the queues end or not.
      *
-     * @param  bool $value
+     * @param bool $value
+     *
      * @return $this
      */
     public function declareAsAutoDelete($value)
     {
         $this->autoDelete = (bool) $value;
+
         return $this;
     }
 
@@ -167,12 +178,14 @@ abstract class AbstractExchange
     /**
      * Changes if the exchange will be declared as internal/private and being only available for other exchanges.
      *
-     * @param  bool $value
+     * @param bool $value
+     *
      * @return $this
      */
     public function declareAsInternal($value)
     {
         $this->internal = (bool) $value;
+
         return $this;
     }
 
@@ -187,12 +200,14 @@ abstract class AbstractExchange
     /**
      * Changes if the exchange will be declared as no_wait when declared with the server/broker.
      *
-     * @param  bool $value
+     * @param bool $value
+     *
      * @return $this
      */
     public function declareAsNoWait($value)
     {
         $this->nowait = (bool) $value;
+
         return $this;
     }
 
@@ -205,19 +220,21 @@ abstract class AbstractExchange
     }
 
     /**
-     * Changes the declaration arguments for the exchange
+     * Changes the declaration arguments for the exchange.
      *
-     * @param  array $arguments
+     * @param array $arguments
+     *
      * @return $this
      */
     public function setArguments(array $arguments)
     {
         $this->arguments = $arguments;
+
         return $this;
     }
 
     /**
-     * Returns the exchange arguments
+     * Returns the exchange arguments.
      *
      * @return array
      */

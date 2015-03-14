@@ -1,8 +1,9 @@
 <?php
+
 namespace znk3r\MQlib\Message;
 
 /**
- * Message that's going to be send to a queue
+ * Message that's going to be send to a queue.
  *
  * @version   1.0.0
  *
@@ -19,7 +20,7 @@ class Outgoing extends Message
      * If true, the server will return an unroutable message with a Return method. a return listener must be
      * declared for the channel using set_return_listener. If false, the server silently drops the message.
      *
-     * @var bool $mandatory
+     * @var bool
      */
     protected $mandatory = false;
 
@@ -30,14 +31,14 @@ class Outgoing extends Message
      * With a false, the message will continue on the server until there's a queue to consume it, instead of
      * returning an error.
      *
-     * @var bool $immediate
+     * @var bool
      */
     protected $immediate = false;
 
     /**
      * Function to be executed if there's a return message from the server.
      * Used when immediate or mandatory flags are set to true.
-     * These are the parameters passed to the function:
+     * These are the parameters passed to the function:.
      *
      * - param int         $reply_code
      * - param string      $reply_text
@@ -45,24 +46,26 @@ class Outgoing extends Message
      * - param string      $routing_key
      * - param AMQPMessage $msg
      *
-     * @var callable $returnListener
+     * @var callable
      */
     protected $returnListener = null;
 
     /**
-     * Set message routing key for topic and direct exchanges
+     * Set message routing key for topic and direct exchanges.
      *
      * @param string
+     *
      * @return $this
      */
     public function setRoutingKey($key)
     {
         $this->routingKey = $key;
+
         return $this;
     }
 
     /**
-     * Get message routing key for topic and direct exchanges
+     * Get message routing key for topic and direct exchanges.
      *
      * @return string
      */
@@ -73,19 +76,21 @@ class Outgoing extends Message
 
     /**
      * Specifies the function to call for return messages from the server.
-     * Needed for Mandatory and Immediate messages
+     * Needed for Mandatory and Immediate messages.
      *
      * @param callable $listener
+     *
      * @return $this
      */
     public function setReturnListener($listener)
     {
         $this->returnListener = $listener;
+
         return $this;
     }
 
     /**
-     * Get the return listener
+     * Get the return listener.
      *
      * @return callable
      */
@@ -105,10 +110,11 @@ class Outgoing extends Message
     }
 
     /**
-     * Set if the message is going to be mandatory
+     * Set if the message is going to be mandatory.
      *
-     * @param  bool $mandatory
-     * @param  callable $listener Optional return listener
+     * @param bool     $mandatory
+     * @param callable $listener  Optional return listener
+     *
      * @return $this
      */
     public function setMandatory($mandatory, $listener = null)
@@ -118,13 +124,15 @@ class Outgoing extends Message
         if ($listener) {
             $this->setReturnListener($listener);
         }
+
         return $this;
     }
 
     /**
-     * Get if the message is mandatory
+     * Get if the message is mandatory.
      *
      * @throws MessageException
+     *
      * @return bool
      */
     public function isMandatory()
@@ -137,10 +145,11 @@ class Outgoing extends Message
     }
 
     /**
-     * Set if the message is immediate
+     * Set if the message is immediate.
      *
-     * @param  bool $immediate
-     * @param  callable $listener Optional return listener
+     * @param bool     $immediate
+     * @param callable $listener  Optional return listener
+     *
      * @return $this
      */
     public function setImmediate($immediate, $listener = null)
@@ -150,13 +159,15 @@ class Outgoing extends Message
         if ($listener) {
             $this->setReturnListener($listener);
         }
+
         return $this;
     }
 
     /**
-     * Get if the message is immediate
+     * Get if the message is immediate.
      *
      * @throws MessageException
+     *
      * @return bool
      */
     public function isImmediate()
