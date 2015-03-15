@@ -1,6 +1,7 @@
 <?php
 
 namespace znk3r\MQlib\Queue;
+
 use znk3r\MQlib\Exchange\AbstractExchange;
 
 /**
@@ -96,11 +97,13 @@ class Queue
     protected $routingKeys = array();
 
     /**
-     * @param string $name
+     * @param string|null $name
      */
-    public function __construct($name)
+    public function __construct($name = null)
     {
-        $this->setName($name);
+        if (null !== $name) {
+            $this->setName($name);
+        }
     }
 
     /**
@@ -130,12 +133,21 @@ class Queue
     }
 
     /**
+     * @return bool
+     */
+    public function hasName()
+    {
+        return !empty($this->name);
+    }
+
+    /**
      * Bind the queue to a specific exchange.
      *
      * The queue will listen and receive messages from this exchange. Producer and consumer should share
      * the same exchange configuration.
      *
      * @param AbstractExchange $exchange
+     *
      * @return $this
      */
     public function bindTo(AbstractExchange $exchange)
@@ -143,6 +155,14 @@ class Queue
         $this->exchange = $exchange;
 
         return $this;
+    }
+
+    /**
+     * @return AbstractExchange
+     */
+    public function getExchange()
+    {
+        return $this->exchange;
     }
 
     /**
@@ -295,6 +315,8 @@ class Queue
 
     /**
      * Returns the routing keys for the queue.
+     *
+     * The result array must contain at least 1 element, which may be null.
      *
      * @return array
      */
