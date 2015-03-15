@@ -1,5 +1,7 @@
 <?php
+
 namespace znk3r\MQlib;
+
 use znk3r\MQlib\Exchange\AbstractExchange;
 use znk3r\MQlib\Message\Outgoing;
 
@@ -18,6 +20,7 @@ class Producer extends AbstractApplication
 
     /**
      * @param AbstractExchange $exchange
+     *
      * @return $this
      */
     public function sendTo(AbstractExchange $exchange)
@@ -45,19 +48,17 @@ class Producer extends AbstractApplication
     }
 
     /**
-     * @param Outgoing $message
+     * @param Outgoing              $message
      * @param AbstractExchange|null $exchange
+     *
      * @return $this
+     *
      * @throws Exception
      */
     public function publish(Outgoing $message, $exchange = null)
     {
         if (null !== $exchange) {
             $this->sendTo($exchange);
-        }
-
-        if (!$this->hasExchange()) {
-            throw new Exception("The exchange hasn't been defined");
         }
 
         $this->getBroker()->getChannel()->sendMessage($message, $this->getExchange());
