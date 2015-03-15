@@ -13,7 +13,7 @@ namespace znk3r\MQlib\Exchange;
 abstract class AbstractExchange
 {
     /** @var string $name Name of the exchange */
-    protected $name = null;
+    protected $name;
 
     /**
      * If true, the server will reply with Declare-Ok if the exchange already exists with the same name, and raise
@@ -32,11 +32,13 @@ abstract class AbstractExchange
      * Non-durable exchanges are deleted when the server restarts, and usually re-created when a producer/consumer
      * request that.
      *
+     * It's advisable to use durable exchanges on production and non-durable on dev environments.
+     *
      * @note You may need a plugin to delete durable exchanges from RabbitMQ
      *
      * @var bool
      */
-    protected $durable = true;
+    protected $durable = false;
 
     /**
      * If set, the exchange is deleted when all queues have finished using it.
@@ -80,7 +82,7 @@ abstract class AbstractExchange
      */
     public function __construct($name)
     {
-        $this->name = $name;
+        $this->setName($name);
     }
 
     /**
