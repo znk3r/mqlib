@@ -61,7 +61,7 @@ Via [composer.json](http://getcomposer.org/doc/01-basic-usage.md#composer-json-p
     <?php
     
     use znk3r\MQlib\Consumer;
-    use znk3r\MQlib\Queue;
+    use znk3r\MQlib\Queue\Queue;
     use znk3r\MQlib\Exchange\Fanout;
     
     $exchange = new Fanout('my_exchange');
@@ -71,6 +71,6 @@ Via [composer.json](http://getcomposer.org/doc/01-basic-usage.md#composer-json-p
     
     $consumer = new Consumer('consumer_name');
     $consumer->listen($queue, function($msg) {
-        echo $msg->getBody();
-        $msg->acknowledge();
+        echo $msg->getBody().PHP_EOL;
+        $msg->acknowledged();
     });
