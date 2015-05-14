@@ -58,21 +58,13 @@ class Outgoing extends Message
      */
     public function getAMQPMessage()
     {
-        $properties = array(
-            "content_type" => $this->getContentType(),
-            "content_encoding" => $this->getContentEncoding(),
-            "application_headers" => $this->getApplicationHeaders(),
-            "delivery_mode" => $this->getDeliveryMode(),
-            "priority" => $this->getPriority(),
-            "correlation_id" => $this->getCorrelationId(),
-            "reply_to" => $this->getReplyTo(),
-            "expiration" => $this->getExpirationTime(),
-            "message_id" => $this->getMessageId(),
-            "timestamp" => $this->getTimestamp(),
-            "type" => $this->getType(),
-            "user_id" => $this->getUserId(),
-            "app_id" => $this->getAppId()
-        );
+        $properties = array();
+
+        foreach ($this->propertyMapping as $mqlibProperty => $amqpProperty) {
+            if (property_exists($this, $mqlibProperty)) {
+                $properties[$amqpProperty] = $this->$mqlibProperty;
+            }
+        }
 
         return new AMQPMessage(
             $this->getBody(),

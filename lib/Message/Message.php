@@ -31,7 +31,7 @@ abstract class Message
      *
      * @var bool
      */
-    protected $isPersistent;
+    protected $deliveryMode;
 
     /**
      * Sets the priority of the message inside a queue.
@@ -82,6 +82,24 @@ abstract class Message
      * @var string|null
      */
     protected $correlationId;
+
+    /** @var array $propertyMapping Mapping between Message class and AMQPMessage */
+    protected $propertyMapping = array(
+        'contentType' => 'content_type',
+        'contentEncoding' => 'content_encoding',
+        'priority' => 'priority',
+        'expiration' => 'expiration',
+        'messageId' => 'message_id',
+        'timestamp' => 'timestamp',
+        'userId' => 'user_id',
+        'appId' => 'app_id',
+        'applicationHeaders' => 'application_headers',
+        'replyTo' => 'reply_to',
+        'correlationId' => 'correlation_id',
+        'deliveryMode' => 'delivery_mode',
+        'type' => 'type',
+        'clusterId' => 'cluster_id',
+    );
 
     /**
      * Set the body of the message.
@@ -181,7 +199,7 @@ abstract class Message
      */
     public function markAsPersistent($persistent = true)
     {
-        $this->isPersistent = (bool) $persistent;
+        $this->deliveryMode = (bool) $persistent;
 
         return $this;
     }
@@ -191,7 +209,25 @@ abstract class Message
      */
     public function isPersistent()
     {
-        return $this->isPersistent;
+        return $this->deliveryMode == 2;
+    }
+
+    /**
+     * @param int $mode
+     * @return $this
+     * @throws InvalidArgumentException
+     */
+    public function setDeliveryMode($mode)
+    {
+        $mode = (int) $mode;
+
+        if ($mode !== 1 && $mode !== 2) {
+            throw new InvalidArgumentException('Invalid delivery mode, must be 1 or 2');
+        }
+
+        $this->deliveryMode = $mode;
+
+        return $this;
     }
 
     /**
@@ -203,7 +239,7 @@ abstract class Message
      */
     public function getDeliveryMode()
     {
-        return $this->isPersistent() ? 2 : 1;
+        return $this->deliveryMode;
     }
 
     /**

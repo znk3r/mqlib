@@ -55,20 +55,11 @@ class Incoming extends Message
      */
     protected function setPropertiesFromMessage($queueMessage)
     {
-        $this->contentType = $queueMessage->get('content_type');
-        $this->contentEncoding = $queueMessage->get('content_encoding');
-        $this->priority = $queueMessage->get('priority');
-        $this->expiration = $queueMessage->get('expiration');
-        $this->messageId = $queueMessage->get('message_id');
-        $this->timestamp = $queueMessage->get('timestamp');
-        $this->userId = $queueMessage->get('user_id');
-        $this->appId = $queueMessage->get('app_id');
-        $this->applicationHeaders = $queueMessage->get('application_headers');
-        $this->replyTo = $queueMessage->get('reply_to');
-        $this->correlationId = $queueMessage->get('correlation_id');
-        $this->isPersistent = $queueMessage->get('delivery_mode') == 2;
-        $this->type = $queueMessage->get('type');
-        $this->clusterId = $queueMessage->get('cluster_id');
+        foreach ($this->propertyMapping as $mqlibProperty => $amqpProperty) {
+            if ($queueMessage->has($amqpProperty) && property_exists($this, $mqlibProperty)) {
+                $this->$mqlibProperty = $amqpProperty;
+            }
+        }
 
         return $this;
     }
@@ -157,7 +148,7 @@ class Incoming extends Message
      */
     public function getChannel()
     {
-        return $this->getChannel();
+        return $this->channel;
     }
 
     /**
