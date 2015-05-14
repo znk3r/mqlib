@@ -15,9 +15,6 @@ use znk3r\MQlib\Broker\Channel\Channel;
  */
 class Incoming extends Message
 {
-    /** @var string $type */
-    protected $type;
-
     /** @var string $clusterId */
     protected $clusterId;
 
@@ -145,14 +142,6 @@ class Incoming extends Message
     public function cancelConsumer()
     {
         $this->getChannel()->cancelConsumer($this->consumerId);
-    }
-
-    /**
-     * @return string
-     */
-    public function getType()
-    {
-        return $this->type;
     }
 
     /**

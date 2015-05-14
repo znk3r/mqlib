@@ -128,7 +128,7 @@ class Channel
         }
 
         $this->channel->basic_publish(
-            $message->getBody(),
+            $message->getAMQPMessage(),
             $exchange->getName(),
             $message->getRoutingKey(),
             $message->isMandatory(),

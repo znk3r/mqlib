@@ -1,6 +1,7 @@
 <?php
 
 namespace znk3r\MQlib\Message;
+use PhpAmqpLib\Message\AMQPMessage;
 
 /**
  * Message that's going to be send to a queue.
@@ -49,6 +50,35 @@ class Outgoing extends Message
      * @var callable
      */
     protected $returnListener = null;
+
+    /**
+     * Return an AMQPMessage object usable by PHP-Amqplib
+     *
+     * @return AMQPMessage
+     */
+    public function getAMQPMessage()
+    {
+        $properties = array(
+            "content_type" => $this->getContentType(),
+            "content_encoding" => $this->getContentEncoding(),
+            "application_headers" => $this->getApplicationHeaders(),
+            "delivery_mode" => $this->getDeliveryMode(),
+            "priority" => $this->getPriority(),
+            "correlation_id" => $this->getCorrelationId(),
+            "reply_to" => $this->getReplyTo(),
+            "expiration" => $this->getExpirationTime(),
+            "message_id" => $this->getMessageId(),
+            "timestamp" => $this->getTimestamp(),
+            "type" => $this->getType(),
+            "user_id" => $this->getUserId(),
+            "app_id" => $this->getAppId()
+        );
+
+        return new AMQPMessage(
+            $this->getBody(),
+            $properties
+        );
+    }
 
     /**
      * Set message routing key for topic and direct exchanges.

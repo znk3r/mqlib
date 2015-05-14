@@ -21,6 +21,9 @@ abstract class Message
     /** @var string $contentEncoding Content encoding of the body message, set to UTF-8 by default */
     protected $contentEncoding = 'UTF-8';
 
+    /** @var string $type */
+    protected $type;
+
     /**
      * Sets the delivery mode:
      *  1: Non-persistent. The message is stored in memory and can be lost if server restarts.
@@ -154,6 +157,22 @@ abstract class Message
     }
 
     /**
+     * @param string $type
+     * @return $this
+     */
+    public function setType($type)
+    {
+        $this->type = $type;
+
+        return $this;
+    }
+
+    public function getType()
+    {
+        return $this->type;
+    }
+
+    /**
      * Declare the message as persistent inside the queue.
      *
      * @param bool $persistent
@@ -173,6 +192,18 @@ abstract class Message
     public function isPersistent()
     {
         return $this->isPersistent;
+    }
+
+    /**
+     * Return delivery mode:
+     *  - 1 for non persistent messages
+     *  - 2 for persistent messages
+     *
+     * @return int
+     */
+    public function getDeliveryMode()
+    {
+        return $this->isPersistent() ? 2 : 1;
     }
 
     /**
