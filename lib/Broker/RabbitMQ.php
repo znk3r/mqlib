@@ -1,6 +1,7 @@
 <?php
 
 namespace znk3r\MQlib\Broker;
+use znk3r\MQlib\Broker\Connection\Factory;
 
 /**
  * RabbitMQ broker with default configuration.
@@ -14,15 +15,17 @@ class RabbitMQ extends AbstractBroker
 {
     /** @var array $defaultOptions Default options for RabbitMQ */
     protected $defaultOptions = array(
+        'connectionType' => Factory::CONNECTION_STREAM,
+        'channelId' => null,
         'host' => 'localhost',
         'port' => 5672,
         'user' => 'guest',
-        'pass' => 'guest',
+        'password' => 'guest',
         'vhost' => '/',
-        'login_method' => 'AMQPLAIN',
+        'loginMethod' => 'AMQPLAIN',
         'locale' => 'en_US',
         'timeout' => 5,
-        'channel_id' => null,
+        '$readWriteTimeout' => 5,
     );
 
     /**
