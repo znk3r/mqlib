@@ -249,7 +249,7 @@ abstract class AbstractBroker
         }
 
         $this->channel = new Channel(
-            $this->getConnection()->channel($channelId)
+            $this->getConnection()->channel($this->getChannelId())
         );
 
         return $this;
