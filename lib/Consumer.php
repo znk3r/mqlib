@@ -60,6 +60,12 @@ class Consumer extends AbstractApplication
 
     public function listen(Queue $queue, $action)
     {
+        if (!$this->getBroker()->isReady()) {
+            $this->getBroker()
+                 ->connect()
+                 ->openChannel();
+        }
+
         $channel = $this->getBroker()->getChannel();
 
         $channel
