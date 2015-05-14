@@ -57,6 +57,12 @@ class Producer extends AbstractApplication
      */
     public function publish(Outgoing $message, $exchange = null)
     {
+        if (!$this->getBroker()->isReady()) {
+            $this->getBroker()
+                ->connect()
+                ->openChannel();
+        }
+
         if (null !== $exchange) {
             $this->sendTo($exchange);
         }

@@ -40,8 +40,12 @@ final class Factory
      *
      * @return AMQPStreamConnection|AMQPSSLConnection|AMQPSocketConnection|AMQPLazyConnection
      */
-    public static function create(AbstractBroker $broker, $type = self::CONNECTION_STREAM)
+    public static function create(AbstractBroker $broker, $type = null)
     {
+        if (empty($type)) {
+            $type = self::CONNECTION_STREAM;
+        }
+
         switch ($type) {
             case self::CONNECTION_STREAM:
                 return self::getStreamConnection($broker);

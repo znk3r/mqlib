@@ -167,6 +167,16 @@ abstract class AbstractBroker
     }
 
     /**
+     * Check if we are connected to the broker with an open channel
+     *
+     * @return bool
+     */
+    public function isReady()
+    {
+        return $this->getConnection()->isConnected() && $this->getChannel() instanceof Channel;
+    }
+
+    /**
      * @param string $type
      *
      * @throws ConnectionException
