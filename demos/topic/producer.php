@@ -32,3 +32,6 @@ if (!empty($argv[1])) {
 $producer->publish($message, $exchange);
 
 echo "Sent!\n";
+
+
+?>
