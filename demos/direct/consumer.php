@@ -11,6 +11,7 @@ $queueName = 'mqlib_direct_queue-'.rand();
 $consumerName = 'consumer-'.getmypid();
 
 // Declare direct exchange
+// Fixed the name
 // Must be the same exchange as the one used by the producer
 $exchange = new Direct($exchangeName);
 
