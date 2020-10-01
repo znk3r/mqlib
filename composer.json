@@ -1,6 +1,6 @@
 {
     "name": "znk3r/mqlib",
-    "description": "AMQP abstraction library over php-amqplib for PHP (5.3+)",
+    "description": "AMQP abstraction library over php-amqplib for PHP (5.4+)",
     "keywords": ["queue","amqp", "message", "rabbitmq"],
     "homepage": "https://github.com/znk3r/mqlib",
     "license": "GPL-2.0",
